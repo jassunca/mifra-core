@@ -10,12 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Container with all saga step messages produced so far in a given saga. The class type of the step functions as the key
  * itself to access its instantiation generated.
  */
-public class SagaStepHistoryMap {
+public class SagaStepHistory {
 
     private final Map<Class<? extends SagaStepPayload>, SagaStepMessage<?>> historyMap;
     private String currentStep;
 
-    public SagaStepHistoryMap() {
+    public SagaStepHistory() {
         historyMap = new ConcurrentHashMap<>();
     }
 

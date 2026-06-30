@@ -6,7 +6,7 @@ import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.domain.SagaStepOutcome;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
-import org.mifra.core.components.domain.messages.SagaStepHistoryMap;
+import org.mifra.core.components.domain.messages.SagaStepHistory;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 
@@ -31,7 +31,7 @@ public class MifraCoordinator {
     @SuppressWarnings("unchecked")
     public <I extends ExternalRequestBody> ExternalReply<?> executeSaga(OrchestratorInvoker<I, ?> invoker, ExternalRequest<?> request){
 
-        SagaStepHistoryMap sagaState = new SagaStepHistoryMap();
+        SagaStepHistory sagaState = new SagaStepHistory();
 
         // Safe type bridge within the framework engine boundary
         ExternalRequest<I> typedRequest = (ExternalRequest<I>) request;

@@ -2,7 +2,7 @@ package org.mifra.core.components.invokers;
 
 import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.domain.SagaStepMessage;
-import org.mifra.core.components.domain.messages.SagaStepHistoryMap;
+import org.mifra.core.components.domain.messages.SagaStepHistory;
 import org.mifra.core.components.handlers.ParticipantStepHandler;
 
 /**
@@ -18,12 +18,12 @@ public class ParticipantInvoker {
 
     /**
      * Caller method that delegates the step execution to the handler.
-     * @param historyMap The container which holds all the resulting objects from each executed step so far in the saga.
+     * @param sagaStepHistory The container which holds all the resulting objects from each executed step so far in the saga.
      * @return The result of the participant step execution.
      */
-    public SagaStepMessage<?> delegate(SagaStepHistoryMap historyMap) {
+    public SagaStepMessage<?> delegate(SagaStepHistory sagaStepHistory) {
         try {
-            return this.handler.execute(historyMap);
+            return this.handler.execute(sagaStepHistory);
         } catch (Throwable t) {
             throw new RuntimeException("Step execution failed", t);
         }

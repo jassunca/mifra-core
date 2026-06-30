@@ -91,7 +91,7 @@ public class MifraEngine {
      * Registers a specific saga step method pointer from a participant service.
      *
      * @param label   The unique string tracking key for the graph node configuration.
-     * @param handler A method reference or lambda matching (SagaStepHistoryMap) -> SagaStepMessage<T>.
+     * @param handler A method reference or lambda matching (SagaStepHistory) -> SagaStepMessage<T>.
      * @param <T>     The concrete payload type which must implement SagaStepPayload.
      */
     public <T extends SagaStepPayload> void registerParticipantStep(

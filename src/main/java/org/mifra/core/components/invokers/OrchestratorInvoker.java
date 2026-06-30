@@ -6,7 +6,7 @@ import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.api.orchestrator.Orchestrator;
-import org.mifra.core.components.domain.messages.SagaStepHistoryMap;
+import org.mifra.core.components.domain.messages.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 
 /**
@@ -44,7 +44,7 @@ public class OrchestratorInvoker<I extends ExternalRequestBody, O extends Extern
         return orchestrator.handleOncomingRequest((ExternalRequest<I>) request);
     }
 
-    public ExternalReply<O> prepareExternalReply(SagaStepHistoryMap historyMap) {
-        return orchestrator.prepareExternalReply(historyMap);
+    public ExternalReply<O> prepareExternalReply(SagaStepHistory sagaStepHistory) {
+        return orchestrator.prepareExternalReply(sagaStepHistory);
     }
 }

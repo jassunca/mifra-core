@@ -4,7 +4,7 @@ import org.mifra.core.api.models.domain.SagaStepMessage;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.orchestrator.Orchestrator;
-import org.mifra.core.components.domain.messages.SagaStepHistoryMap;
+import org.mifra.core.components.domain.messages.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 import org.mifra.testresources.messages.SampleExternalReplyBody;
 import org.mifra.testresources.messages.SampleExternalRequestBody;
@@ -22,9 +22,9 @@ public class SampleOrchestrator implements Orchestrator<SampleExternalRequestBod
     }
 
     @Override
-    public ExternalReply<SampleExternalReplyBody> prepareExternalReply(SagaStepHistoryMap historyMap) {
+    public ExternalReply<SampleExternalReplyBody> prepareExternalReply(SagaStepHistory sagaStepHistory) {
 
-        SampleParticipantBPayload resultingStep = historyMap.getStep(SampleParticipantBPayload.class).getPayload();
+        SampleParticipantBPayload resultingStep = sagaStepHistory.getStep(SampleParticipantBPayload.class).getPayload();
 
         SampleExternalReplyBody result = new SampleExternalReplyBody();
         result.setResultingCalculation(resultingStep.getResultingCalculation());
