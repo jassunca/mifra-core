@@ -13,18 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SagaStepHistory {
 
     private final Map<Class<? extends SagaStepPayload>, SagaStepMessage<?>> historyMap;
-    private String currentStep;
 
     public SagaStepHistory() {
         historyMap = new ConcurrentHashMap<>();
-    }
-
-    public String getCurrentStep() {
-        return currentStep;
-    }
-
-    public void setCurrentStep(String currentStep) {
-        this.currentStep = currentStep;
     }
 
     /**
@@ -49,5 +40,14 @@ public class SagaStepHistory {
         }
 
         this.historyMap.put(message.getPayload().getClass(), message);
+    }
+
+    /**
+     * Check if a certain SagaStepMessage is present in the history map.
+     * @param key the payload class of the SagaStepMessage to check.
+     * @return true/false if it exists or not.
+     */
+    public boolean has(Class<? extends SagaStepPayload> key) {
+        return historyMap.containsKey(key);
     }
 }
