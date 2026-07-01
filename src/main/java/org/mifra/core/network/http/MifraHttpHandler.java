@@ -60,7 +60,7 @@ public class MifraHttpHandler extends Handler.Abstract{
                 }
             });
 
-            byte[] jsonBytes = this.mapper.writeValueAsBytes(replyEnvelope);
+            byte[] jsonBytes = this.mapper.writeValueAsBytes(replyEnvelope.getPayload());
             response.getHeaders().put("Content-Type", "application/json");
             response.write(true, ByteBuffer.wrap(jsonBytes), callback);
             return true;
