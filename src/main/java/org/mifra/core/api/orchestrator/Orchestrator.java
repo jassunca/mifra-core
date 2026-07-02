@@ -19,7 +19,7 @@ public interface Orchestrator<I extends ExternalRequestBody, O extends ExternalR
     /**
      * Receive and handle an incoming request.
      * @param request The received request.
-     * @return An ExternalReply object that will be sent back to the client.
+     * @return The first saga step object that will be processed by the saga.
      */
     SagaStepMessage<?> handleOncomingRequest(ExternalRequest<I> request);
 
