@@ -39,7 +39,7 @@ public class MifraEngine {
 
     public MifraEngine() {
 
-        //TODO a proper bootstrapper after checked everything working
+        //TODO a proper bootstrapper with polymorphic server support after checked everything working
         orchestratorRegistry = new OrchestratorRegistry();
         participantRegistry = new ParticipantRegistry();
         dispatcher = new InProcessSagaDispatcher(participantRegistry);

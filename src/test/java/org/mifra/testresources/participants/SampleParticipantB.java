@@ -2,7 +2,7 @@ package org.mifra.testresources.participants;
 
 import org.mifra.core.api.models.domain.SagaStepMessage;
 import org.mifra.core.api.participant.Participant;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.testresources.messages.SampleParticipantAPayload;
 import org.mifra.testresources.messages.SampleParticipantBPayload;
 

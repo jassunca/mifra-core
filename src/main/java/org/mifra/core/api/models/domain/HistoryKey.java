@@ -1,4 +1,4 @@
-package org.mifra.core.components.domain.messages;
+package org.mifra.core.api.models.domain;
 
 import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 

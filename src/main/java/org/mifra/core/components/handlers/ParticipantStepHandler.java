@@ -2,7 +2,7 @@ package org.mifra.core.components.handlers;
 
 import org.mifra.core.api.models.domain.SagaStepMessage;
 import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 
 /**
  * Functional Interface that represents a given method in a generic format assignable at runtime. By standard definition,

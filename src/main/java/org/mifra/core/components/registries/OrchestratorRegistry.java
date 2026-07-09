@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * input and output payloads.
  */
 public class OrchestratorRegistry {
-    private final Map<String, OrchestratorInvoker<?, ?>> routeMap = new ConcurrentHashMap<>();
+    private final Map<String, OrchestratorInvoker<? extends ExternalRequestBody, ? extends ExternalReplyBody>> routeMap = new ConcurrentHashMap<>();
 
     /**
      * Register a given orchestrator in the orchestrator registry.
@@ -39,7 +39,7 @@ public class OrchestratorRegistry {
         this.routeMap.put(path, new OrchestratorInvoker<>(inputType, orchestrator));
     }
 
-    public OrchestratorInvoker<?, ?> getInvoker(String path) {
+    public OrchestratorInvoker<? extends ExternalRequestBody, ? extends ExternalReplyBody> getInvoker(String path) {
         return this.routeMap.get(path);
     }
 }

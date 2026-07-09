@@ -13,6 +13,8 @@ public class SagaStepMessage<T extends SagaStepPayload> {
 
     private T payload;
 
+    private boolean locked = false;
+
     public SagaStepMessage(T payload) {
 
         this.payload = payload;
@@ -27,11 +29,25 @@ public class SagaStepMessage<T extends SagaStepPayload> {
     }
 
     public void setPayload(T payload) {
+        isLocked();
         this.payload = payload;
     }
 
     public void setResultState(SagaStepOutcome resultState) {
+        isLocked();
         this.resultState = resultState;
+    }
+
+    /**
+     * Internal method called by SagaStepHistory as it adds the message to make it immutable after the fact.
+     */
+    void lock() {
+        this.locked = true;
+    }
+
+    void isLocked() {
+        if (locked)
+            throw new IllegalStateException("Cannot modify a SagaStepMessage after it's been locked.");
     }
 }
 

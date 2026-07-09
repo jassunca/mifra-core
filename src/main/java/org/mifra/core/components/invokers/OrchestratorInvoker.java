@@ -1,12 +1,13 @@
 package org.mifra.core.components.invokers;
 
 import org.mifra.core.api.models.domain.SagaStepMessage;
+import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.api.orchestrator.Orchestrator;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 
 /**
@@ -39,9 +40,8 @@ public class OrchestratorInvoker<I extends ExternalRequestBody, O extends Extern
      * @param request The request received from the client.
      * @return The object that is serialized and returned to the client as the reply.
      */
-    @SuppressWarnings("unchecked")
-    public SagaStepMessage<?> delegate(ExternalRequest<?> request) {
-        return orchestrator.handleOncomingRequest((ExternalRequest<I>) request);
+    public SagaStepMessage<? extends SagaStepPayload> delegate(ExternalRequest<I> request) {
+        return orchestrator.handleOncomingRequest(request);
     }
 
     public ExternalReply<O> prepareExternalReply(SagaStepHistory sagaStepHistory) {

@@ -1,12 +1,14 @@
 package org.mifra.core.components.coordinators;
 
 import org.mifra.core.api.models.domain.SagaStepMessage;
+import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.domain.SagaStepOutcome;
+import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 
@@ -28,15 +30,11 @@ public class MifraCoordinator {
      * @return The reply object generated at the end of the saga that is sent back to the client.
      * @param <I> The class of the deserialized external request payload, which must implement ExternalRequestBody.
      */
-    @SuppressWarnings("unchecked")
-    public <I extends ExternalRequestBody> ExternalReply<?> executeSaga(OrchestratorInvoker<I, ?> invoker, ExternalRequest<?> request){
+    public <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<O> executeSaga(OrchestratorInvoker<I, O> invoker, ExternalRequest<I> request){
 
         SagaStepHistory sagaState = new SagaStepHistory();
 
-        // Safe type bridge within the framework engine boundary
-        ExternalRequest<I> typedRequest = (ExternalRequest<I>) request;
-
-        SagaStepMessage<?> initialMessage = invoker.delegate(typedRequest);
+        SagaStepMessage<? extends SagaStepPayload> initialMessage = invoker.delegate(request);
         sagaState.addStep(initialMessage);
 
         SagaStepMap stepMap = invoker.getStepMap();
@@ -45,7 +43,7 @@ public class MifraCoordinator {
 
         while (currentStepLabel != null) {
 
-            SagaStepMessage<?> message = dispatcher.dispatch(currentStepLabel, sagaState);
+            SagaStepMessage<? extends SagaStepPayload> message = dispatcher.dispatch(currentStepLabel, sagaState);
             sagaState.addStep(message);
             lastOutcome = message.getResultState();
             SagaStepMap.StepNode currentNode = stepMap.getStep(currentStepLabel);

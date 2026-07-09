@@ -3,6 +3,7 @@ package org.mifra.core.components.external.assemblers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.ExternalRequest;
+import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
@@ -54,21 +55,38 @@ public class HttpMessageAssembler implements MifraExternalMessageAssembler{
         }
 
         try {
-            Class<? extends ExternalRequestBody> requestType = invoker.getInputType();
-
-            ExternalRequestBody requestBody = deserializer.deserialize(rawJson, requestType);
-
-            ExternalRequest<ExternalRequestBody> externalRequest = new ExternalRequest<>(
-                    requestId,
-                    java.time.ZonedDateTime.now(),
-                    headers,
-                    requestBody
-            );
-
-            return coordinator.executeSaga(invoker, externalRequest);
+            return executeCapturedSaga(invoker, rawJson, requestId, headers);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * This is a private helper method that binds <I> and <O> dynamically at runtime, creating a type-safe funnel
+     * that links the coordinator's type safe logic to the handler's wildcard requirement.
+     */
+    @SuppressWarnings("unchecked") //Mandatory warning suppress for the regardless safe invoker cast.
+    private <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<O> executeCapturedSaga(
+            OrchestratorInvoker<?, ?> rawInvoker,
+            String rawJson,
+            String requestId,
+            Map<String, List<String>> headers
+    ) throws JsonProcessingException {
+
+        OrchestratorInvoker<I, O> invoker = (OrchestratorInvoker<I, O>) rawInvoker;
+
+        Class<I> requestType = invoker.getInputType();
+
+        I requestBody = deserializer.deserialize(rawJson, requestType);
+
+        ExternalRequest<I> externalRequest = new ExternalRequest<>(
+                requestId,
+                java.time.ZonedDateTime.now(),
+                headers,
+                requestBody
+        );
+
+        return coordinator.executeSaga(invoker, externalRequest);
     }
 }

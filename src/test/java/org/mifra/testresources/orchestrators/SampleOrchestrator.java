@@ -4,7 +4,7 @@ import org.mifra.core.api.models.domain.SagaStepMessage;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.orchestrator.Orchestrator;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 import org.mifra.testresources.messages.SampleExternalReplyBody;
 import org.mifra.testresources.messages.SampleExternalRequestBody;

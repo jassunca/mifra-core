@@ -1,11 +1,12 @@
 package org.mifra.core.api.orchestrator;
 
 import org.mifra.core.api.models.domain.SagaStepMessage;
+import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
-import org.mifra.core.components.domain.messages.SagaStepHistory;
+import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
 
 /**
@@ -21,7 +22,7 @@ public interface Orchestrator<I extends ExternalRequestBody, O extends ExternalR
      * @param request The received request.
      * @return The first saga step object that will be processed by the saga.
      */
-    SagaStepMessage<?> handleOncomingRequest(ExternalRequest<I> request);
+    SagaStepMessage<? extends SagaStepPayload> handleOncomingRequest(ExternalRequest<I> request);
 
     /**
      * Prepare the reply to return to the client when a saga finishes.
