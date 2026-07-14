@@ -41,14 +41,14 @@ public class HttpMessageAssembler implements MifraExternalMessageAssembler{
      * @param headers The client request headers
      * @return An ExternalReply object produced at the end of the saga.
      */
-    public ExternalReply<?> process(
+    public ExternalReply<? extends ExternalReplyBody> process(
             String path,
             String rawJson,
             String requestId,
             Map<String, List<String>> headers
     ) {
 
-        OrchestratorInvoker<?, ?> invoker = this.orchestratorRegistry.getInvoker(path);
+        OrchestratorInvoker<? extends ExternalRequestBody, ? extends ExternalReplyBody> invoker = this.orchestratorRegistry.getInvoker(path);
 
         if (invoker == null) {
             return null;

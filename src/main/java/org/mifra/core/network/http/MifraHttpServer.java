@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.mifra.core.components.external.assemblers.HttpMessageAssembler;
 import org.mifra.core.components.external.assemblers.MifraExternalMessageAssembler;
+import org.mifra.core.components.registries.OrchestratorRegistry;
 import org.mifra.core.network.MifraBaseServer;
 
 /**
@@ -14,6 +15,8 @@ import org.mifra.core.network.MifraBaseServer;
 public class MifraHttpServer extends MifraBaseServer {
 
     private Server server;
+
+    private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
     public MifraHttpServer(int port, MifraExternalMessageAssembler assembler) {
         super(port, assembler);
@@ -37,11 +40,14 @@ public class MifraHttpServer extends MifraBaseServer {
         if (abstractAssembler instanceof HttpMessageAssembler concreteAssembler) {
             server.setHandler(new MifraHttpHandler(concreteAssembler));
         } else {
+            String currentAssembler = abstractAssembler != null ? abstractAssembler.getClass().getName() : "null";
+            logger.log(System.Logger.Level.ERROR,"Mifra Bootstrap Error: MifraHttpServer requires an instance of '%s' to operate. " +
+                            "An incompatible assembler implementation of type '%s' was provided instead.",
+                    HttpMessageAssembler.class.getName(), currentAssembler);
             throw new IllegalStateException(String.format(
                     "Mifra Bootstrap Error: MifraHttpServer requires an instance of '%s' to operate. " +
                             "An incompatible assembler implementation of type '%s' was provided instead.",
-                    HttpMessageAssembler.class.getName(),
-                    abstractAssembler != null ? abstractAssembler.getClass().getName() : "null"
+                    HttpMessageAssembler.class.getName(), currentAssembler
             ));
         }
 

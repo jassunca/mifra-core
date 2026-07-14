@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OrchestratorRegistry {
     private final Map<String, OrchestratorInvoker<? extends ExternalRequestBody, ? extends ExternalReplyBody>> routeMap = new ConcurrentHashMap<>();
 
+    private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
+
     /**
      * Register a given orchestrator in the orchestrator registry.
      * @param path The endpoint path the orchestrator receives requests on, in the format "/{path}", excluding
@@ -33,6 +35,7 @@ public class OrchestratorRegistry {
             Orchestrator<I, O> orchestrator) {
 
         if (routeMap.containsKey(path)) {
+            logger.log(System.Logger.Level.ERROR, "Duplicate route registration detected for path: " + path);
             throw new IllegalArgumentException("Duplicate route registration detected for path: " + path);
         }
 

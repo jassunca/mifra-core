@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParticipantRegistry {
     private final Map<String, ParticipantInvoker> routeMap = new ConcurrentHashMap<>();
 
+    private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
+
     /**
      * Register a participant step within the registry inside an invoker wrapper class.
      * @param label The step label that identifies the participant step within the SagaStepMap.
@@ -23,11 +25,18 @@ public class ParticipantRegistry {
             String label,
             ParticipantStepHandler<O> handler) {
 
-        if (label == null || handler == null) {
-            throw new IllegalArgumentException("Label and handler cannot be null");
+        if (label == null) {
+            logger.log(System.Logger.Level.ERROR,"The participant label cannot be null");
+            throw new IllegalArgumentException("The participant label cannot be null");
+        }
+
+        if (handler == null) {
+            logger.log(System.Logger.Level.ERROR,"The participant handler cannot be null");
+            throw new IllegalArgumentException("The participant handler cannot be null");
         }
 
         if (routeMap.containsKey(label)) {
+            logger.log(System.Logger.Level.ERROR,"Duplicate registration registration detected for step: " + label);
             throw new IllegalArgumentException("Duplicate registration registration detected for step: " + label);
         }
 

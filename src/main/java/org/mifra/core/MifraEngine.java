@@ -35,7 +35,7 @@ public class MifraEngine {
 
     private MifraExternalMessageAssembler assembler;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
     public MifraEngine() {
 
@@ -55,9 +55,12 @@ public class MifraEngine {
      */
     public void startAndJoin() throws Exception {
 
-        //TODO polymorphic server interface
-        server = new MifraHttpServer(8080, assembler);
+        int port = 8080;
 
+        //TODO polymorphic server interface
+        server = new MifraHttpServer(port, assembler);
+
+        logger.log(System.Logger.Level.INFO,String.format("Starting Mifra server endpoint on port %d.", port));
         server.start();
         
     }
@@ -67,6 +70,7 @@ public class MifraEngine {
      */
     //TODO implement the stopping service
     public void stop() throws Exception {
+        logger.log(System.Logger.Level.INFO,"Stopping Mifra server.");
         this.server.stop();
     }
 
@@ -84,6 +88,7 @@ public class MifraEngine {
             Class<I> inputType,
             Class<O> outputType,
             Orchestrator<I, O> orchestrator) {
+        logger.log(System.Logger.Level.INFO,String.format("Registering orchestrator: %s",orchestrator.getClass().getName()));
         orchestratorRegistry.register(path, inputType, outputType, orchestrator);
     }
 
@@ -98,6 +103,7 @@ public class MifraEngine {
             String label,
             ParticipantStepHandler<T> handler) {
 
+        logger.log(System.Logger.Level.INFO,String.format("Registering participant for step: %s",label));
         this.participantRegistry.register(label, handler);
     }
 }

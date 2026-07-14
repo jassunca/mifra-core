@@ -12,6 +12,7 @@ import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.components.external.assemblers.HttpMessageAssembler;
 import org.mifra.core.components.messaging.ExternalErrorReplyBody;
+import org.mifra.core.components.registries.OrchestratorRegistry;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class MifraHttpHandler extends Handler.Abstract{
     HttpMessageAssembler assembler;
     private ObjectMapper mapper;
 
+    private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
+
     public MifraHttpHandler(HttpMessageAssembler assembler) {
         this.assembler = assembler;
         mapper = new ObjectMapper();
@@ -37,6 +40,8 @@ public class MifraHttpHandler extends Handler.Abstract{
         String path = Request.getPathInContext(request);
         String rawBodyText = Content.Source.asString(request);
         String requestId = request.getId();
+
+        logger.log(System.Logger.Level.DEBUG, String.format("Receiver external client request from %s: %s", path, rawBodyText));
 
         Map<String, List<String>> rawHeaders = new HashMap<>();
         for (HttpField field : request.getHeaders()) {
