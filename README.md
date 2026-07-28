@@ -25,6 +25,26 @@ In its current 0.1.0 iteration, Mifra's internal architecture is structured acco
 
 ![Alt text](readmeResources/ClassDiagram_0.1.0.svg)
 
+## Hot To Use
+
+Currently, Mifra is distributed as a Maven package via Jitpack. To include it as a project dependency, two snippets must be added to pom.xml file:
+
+- Inside the repositories section:
+```
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+- Inside the dependencies section:
+```
+<dependency>
+    <groupId>com.github.jassunca</groupId>
+    <artifactId>mifra-core</artifactId>
+    <version>v0.1.0</version>
+</dependency>
+```
+
 ## Roadmap
 
 The development of Mifra is structured in several distinct iterations, deliberately moving from a verified "happy path" architecture to a fully resilient, fault-tolerant framework.
