@@ -47,9 +47,7 @@ Currently, Mifra is distributed as a Maven package via Jitpack. To include it as
 
 ## Roadmap
 
-The development of Mifra is structured in several distinct iterations, deliberately moving from a verified "happy path" architecture to a fully resilient, fault-tolerant framework.
-
-Our current development roadmap is structured as follows:
+The development of Mifra is structured in several distinct iterations, with the current development roadmap structured as follows:
 
 * **[0.1.0 (Current)](https://github.com/jassunca/mifra-core/tree/0.1.0):** MVP featuring a functional Saga-pattern coordinator managing local orchestrators and participants. Successfully executes a valid, end-to-end saga flow from client request to final reply.
 * **0.2.0:** Introduction of the asynchronous engine for parallel execution of independent saga steps.
@@ -66,4 +64,4 @@ Since Mifra is a framework library, a companion **[Mifra Demo Application](https
 
 The demo application simulates an item request and inventory check system, demonstrating how Mifra coordinates several participants in a multiple path saga flow, while utilizing the **zero-latency JVM bypass** for local services.
 
-For full instructions on how to clone, configure, and run the project locally, please see the **[Mifra Demo README](https://github.com/jassunca/mifra-demo-orchestrator#readme)**. A detailed explanation of the business logic implementation guidelines is provided in the project's Javadocs.
+For full instructions on how to clone, configure, and run the project locally, please see the **[Mifra Demo README](https://github.com/jassunca/mifra-demo-orchestrator#readme)**. A detailed explanation of the business logic implementation guidelines is provided in the demo project's Javadocs and its code comments.
