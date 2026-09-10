@@ -6,6 +6,7 @@ import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.components.coordinators.MifraCoordinator;
+import org.mifra.core.components.executors.MifraExecutorManager;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 import org.mifra.core.components.registries.OrchestratorRegistry;
 import org.mifra.core.components.serializers.HttpEndpointRequestDeserializer;
@@ -15,20 +16,20 @@ import java.util.Map;
 
 /**
  * HTTP specific message assembler that deserializes the incoming JSON client request and delegates the saga start to the
- * coordinator.
+ * executor manager.
  */
 public class HttpMessageAssembler implements MifraExternalMessageAssembler{
 
-    private final MifraCoordinator coordinator;
+    private final MifraExecutorManager executorManager;
     private final OrchestratorRegistry orchestratorRegistry;
     private final HttpEndpointRequestDeserializer deserializer;
 
     public HttpMessageAssembler(
-            MifraCoordinator coordinator,
+            MifraExecutorManager executorManager,
             OrchestratorRegistry orchestratorRegistry,
             HttpEndpointRequestDeserializer deserializer
     ) {
-        this.coordinator = coordinator;
+        this.executorManager = executorManager;
         this.orchestratorRegistry = orchestratorRegistry;
         this.deserializer = deserializer;
     }
@@ -64,7 +65,7 @@ public class HttpMessageAssembler implements MifraExternalMessageAssembler{
 
     /**
      * This is a private helper method that binds <I> and <O> dynamically at runtime, creating a type-safe funnel
-     * that links the coordinator's type safe logic to the handler's wildcard requirement.
+     * that links the executor's type safe logic to the handler's wildcard requirement.
      */
     @SuppressWarnings("unchecked") //Mandatory warning suppress for the regardless safe invoker cast.
     private <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<O> executeCapturedSaga(
@@ -87,6 +88,6 @@ public class HttpMessageAssembler implements MifraExternalMessageAssembler{
                 requestBody
         );
 
-        return coordinator.executeSaga(invoker, externalRequest);
+        return executorManager.executeSaga(invoker, externalRequest);
     }
 }

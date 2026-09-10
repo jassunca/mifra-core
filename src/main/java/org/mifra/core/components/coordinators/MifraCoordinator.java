@@ -32,6 +32,7 @@ public class MifraCoordinator {
      * @param request The deserialized client request.
      * @return The reply object generated at the end of the saga that is sent back to the client.
      * @param <I> The class of the deserialized external request payload, which must implement ExternalRequestBody.
+     * @param <O> The class of the reply payload, which must implement ExternalReplyBody.
      */
     public <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<O> executeSaga(OrchestratorInvoker<I, O> invoker, ExternalRequest<I> request){
 

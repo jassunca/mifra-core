@@ -7,6 +7,7 @@ import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
+import org.mifra.core.components.executors.MifraExecutorManager;
 import org.mifra.core.components.external.assemblers.HttpMessageAssembler;
 import org.mifra.core.components.external.assemblers.MifraExternalMessageAssembler;
 import org.mifra.core.components.handlers.ParticipantStepHandler;
@@ -31,6 +32,8 @@ public class MifraEngine {
 
     private MifraCoordinator coordinator;
 
+    private final MifraExecutorManager executorManager;
+
     private HttpEndpointRequestDeserializer deserializer = new HttpEndpointRequestDeserializer();
 
     private MifraExternalMessageAssembler assembler;
@@ -45,9 +48,11 @@ public class MifraEngine {
         dispatcher = new InProcessSagaDispatcher(participantRegistry);
         coordinator = new MifraCoordinator(dispatcher);
 
+        executorManager = new MifraExecutorManager(coordinator);
+
         deserializer = new HttpEndpointRequestDeserializer();
 
-        assembler = new HttpMessageAssembler(coordinator, orchestratorRegistry, deserializer);
+        assembler = new HttpMessageAssembler(executorManager, orchestratorRegistry, deserializer);
     }
 
     /**
