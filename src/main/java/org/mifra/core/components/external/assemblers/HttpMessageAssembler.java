@@ -68,7 +68,7 @@ public class HttpMessageAssembler implements MifraExternalMessageAssembler{
      * that links the executor's type safe logic to the handler's wildcard requirement.
      */
     @SuppressWarnings("unchecked") //Mandatory warning suppress for the regardless safe invoker cast.
-    private <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<O> executeCapturedSaga(
+    private <I extends ExternalRequestBody, O extends ExternalReplyBody> ExternalReply<? extends ExternalReplyBody> executeCapturedSaga(
             OrchestratorInvoker<?, ?> rawInvoker,
             String rawJson,
             String requestId,

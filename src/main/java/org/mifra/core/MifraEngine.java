@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
+import org.mifra.core.api.orchestrator.BaseOrchestrator;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
@@ -16,6 +17,10 @@ import org.mifra.core.components.registries.ParticipantRegistry;
 import org.mifra.core.components.serializers.HttpEndpointRequestDeserializer;
 import org.mifra.core.network.MifraBaseServer;
 import org.mifra.core.network.http.MifraHttpServer;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Core framework engine that controls application execution. It handles both the pre-bootstrap orchestrator and
@@ -48,7 +53,10 @@ public class MifraEngine {
         dispatcher = new InProcessSagaDispatcher(participantRegistry);
         coordinator = new MifraCoordinator(dispatcher);
 
-        executorManager = new MifraExecutorManager(coordinator);
+        // TODO: Pull this from a properties file later
+        long defaultTimeoutSeconds = 10;
+
+        executorManager = new MifraExecutorManager(coordinator, defaultTimeoutSeconds);
 
         deserializer = new HttpEndpointRequestDeserializer();
 
@@ -76,7 +84,9 @@ public class MifraEngine {
     //TODO implement the stopping service
     public void stop() throws Exception {
         logger.log(System.Logger.Level.INFO,"Stopping Mifra server.");
-        this.server.stop();
+        if (this.server != null) {
+            this.server.stop();
+        }
     }
 
     /**
@@ -92,7 +102,7 @@ public class MifraEngine {
             String path,
             Class<I> inputType,
             Class<O> outputType,
-            Orchestrator<I, O> orchestrator) {
+            BaseOrchestrator<I, O> orchestrator) {
         logger.log(System.Logger.Level.INFO,String.format("Registering orchestrator: %s",orchestrator.getClass().getName()));
         orchestratorRegistry.register(path, inputType, outputType, orchestrator);
     }

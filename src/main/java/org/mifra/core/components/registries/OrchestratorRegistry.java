@@ -2,6 +2,7 @@ package org.mifra.core.components.registries;
 
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
+import org.mifra.core.api.orchestrator.BaseOrchestrator;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 
@@ -32,7 +33,7 @@ public class OrchestratorRegistry {
             String path,
             Class<I> inputType,
             Class<O> outputType,
-            Orchestrator<I, O> orchestrator) {
+            BaseOrchestrator<I, O> orchestrator) {
 
         if (routeMap.containsKey(path)) {
             logger.log(System.Logger.Level.ERROR, "Duplicate route registration detected for path: " + path);
