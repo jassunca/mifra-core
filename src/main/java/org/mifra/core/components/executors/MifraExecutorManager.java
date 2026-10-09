@@ -7,18 +7,18 @@ import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
 import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 import org.mifra.core.components.registries.OrchestratorRegistry;
+import org.mifra.core.config.core.CoreConfig;
 
 import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * Monitors and manages the lifecycle of all running sagas. It associates each executor object to a thread, by reusing
- * the thread already created by Jetty to handle the client request.
+ * Monitors and manages the lifecycle of all running sagas. It associates each executor object to an individual thread.
  */
 public class MifraExecutorManager {
 
     private MifraCoordinator coordinator;
-    private long timeoutSeconds;
+    private Long timeoutSeconds;
 
     private final Map<String, MifraExecutor> activeExecutors = new ConcurrentHashMap<>();
 
@@ -28,12 +28,11 @@ public class MifraExecutorManager {
 
     private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
-    public MifraExecutorManager(MifraCoordinator coordinator, long timeoutSeconds) {
+    public MifraExecutorManager(MifraCoordinator coordinator, CoreConfig config) {
         this.coordinator = coordinator;
-        this.timeoutSeconds = timeoutSeconds;
+        this.timeoutSeconds = config.getSagaTimeout();
     }
 
-    //TODO implement a timeout monitoring feature
     /**
      * Create a new executor to initiate the saga and terminate it when done.
      * @param invoker The orchestrator invoker that holds the orchestrator responsible for handling the given request.

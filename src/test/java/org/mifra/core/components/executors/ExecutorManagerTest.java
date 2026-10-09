@@ -12,6 +12,7 @@ import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
 import org.mifra.core.components.invokers.OrchestratorInvoker;
 import org.mifra.core.components.registries.ParticipantRegistry;
+import org.mifra.core.config.core.CoreConfig;
 import org.mifra.testresources.messages.SampleExternalRequestBody;
 import org.mifra.testresources.messages.TimeoutCheckExternalReplyBody;
 import org.mifra.testresources.orchestrators.TimeoutCheckOrchestrator;
@@ -36,7 +37,7 @@ public class ExecutorManagerTest {
         this.coordinator = new MifraCoordinator(dispatcher);
         this.invoker = new OrchestratorInvoker<>(SampleExternalRequestBody.class, new TimeoutCheckOrchestrator());
 
-        this.underTest = new MifraExecutorManager(coordinator, 5);
+        this.underTest = new MifraExecutorManager(coordinator, new CoreConfig());
     }
 
     @Test

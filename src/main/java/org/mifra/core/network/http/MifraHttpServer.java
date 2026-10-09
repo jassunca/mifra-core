@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.mifra.core.components.external.assemblers.HttpMessageAssembler;
 import org.mifra.core.components.external.assemblers.MifraExternalMessageAssembler;
 import org.mifra.core.components.registries.OrchestratorRegistry;
+import org.mifra.core.config.server.http.HttpServerConfig;
 import org.mifra.core.network.MifraBaseServer;
 
 /**
@@ -18,8 +19,8 @@ public class MifraHttpServer extends MifraBaseServer {
 
     private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
-    public MifraHttpServer(int port, MifraExternalMessageAssembler assembler) {
-        super(port, assembler);
+    public MifraHttpServer(HttpServerConfig config, MifraExternalMessageAssembler assembler) {
+        super(config.getEndpointPort(), assembler);
         server = new Server();
     }
 

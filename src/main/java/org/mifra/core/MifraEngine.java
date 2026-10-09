@@ -15,9 +15,12 @@ import org.mifra.core.components.handlers.ParticipantStepHandler;
 import org.mifra.core.components.registries.OrchestratorRegistry;
 import org.mifra.core.components.registries.ParticipantRegistry;
 import org.mifra.core.components.serializers.HttpEndpointRequestDeserializer;
+import org.mifra.core.config.ConfigBuilder;
+import org.mifra.core.config.MifraConfig;
 import org.mifra.core.network.MifraBaseServer;
 import org.mifra.core.network.http.MifraHttpServer;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,16 +31,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class MifraEngine {
 
+    private final MifraConfig config;
+
     private MifraBaseServer server;
 
-    private final OrchestratorRegistry orchestratorRegistry;
-    private final ParticipantRegistry participantRegistry;
+    private OrchestratorRegistry orchestratorRegistry;
+    private ParticipantRegistry participantRegistry;
 
-    private final InProcessSagaDispatcher dispatcher;
+    private InProcessSagaDispatcher dispatcher;
 
     private MifraCoordinator coordinator;
 
-    private final MifraExecutorManager executorManager;
+    private MifraExecutorManager executorManager;
 
     private HttpEndpointRequestDeserializer deserializer = new HttpEndpointRequestDeserializer();
 
@@ -45,18 +50,31 @@ public class MifraEngine {
 
     private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
-    public MifraEngine() {
+    public MifraEngine(String path) throws IOException {
 
-        //TODO a proper bootstrapper with polymorphic server support after checked everything working
+        config = new ConfigBuilder()
+                .setConfigFilePath(path)
+                .build();
+
+        bootStrap(config);
+    }
+
+    public MifraEngine() throws IOException {
+
+        config = new ConfigBuilder()
+                .build();
+
+        bootStrap(config);
+    }
+
+    private void bootStrap(MifraConfig config) {
+
         orchestratorRegistry = new OrchestratorRegistry();
         participantRegistry = new ParticipantRegistry();
         dispatcher = new InProcessSagaDispatcher(participantRegistry);
         coordinator = new MifraCoordinator(dispatcher);
 
-        // TODO: Pull this from a properties file later
-        long defaultTimeoutSeconds = 10;
-
-        executorManager = new MifraExecutorManager(coordinator, defaultTimeoutSeconds);
+        executorManager = new MifraExecutorManager(coordinator, config.getCore());
 
         deserializer = new HttpEndpointRequestDeserializer();
 
@@ -68,12 +86,10 @@ public class MifraEngine {
      */
     public void startAndJoin() throws Exception {
 
-        int port = 8080;
-
         //TODO polymorphic server interface
-        server = new MifraHttpServer(port, assembler);
+        server = new MifraHttpServer(config.getServer().getHttp(), assembler);
 
-        logger.log(System.Logger.Level.INFO,String.format("Starting Mifra server endpoint on port %d.", port));
+        logger.log(System.Logger.Level.INFO,String.format("Starting Mifra server endpoint on port %d.", config.getServer().getHttp().getEndpointPort()));
         server.start();
         
     }

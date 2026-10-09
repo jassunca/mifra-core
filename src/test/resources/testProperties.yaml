@@ -1,0 +1,5 @@
+core:
+  sagaTimeout: 10
+server:
+  http:
+    endpointPort: 8070
