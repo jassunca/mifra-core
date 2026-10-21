@@ -6,6 +6,7 @@ import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.ExternalRequest;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
+import org.mifra.core.api.orchestrator.BaseOrchestrator;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
@@ -17,11 +18,11 @@ import org.mifra.core.components.stepmaps.SagaStepMap;
  * @param <O> The parametrized type of the payload to serialize for the reply to the client.
  */
 public class OrchestratorInvoker<I extends ExternalRequestBody, O extends ExternalReplyBody> {
-    private final Orchestrator<I, O> orchestrator;
+    private final BaseOrchestrator<I, O> orchestrator;
     private final Class<I> inputType;
     private final SagaStepMap stepMap;
 
-    public OrchestratorInvoker(Class<I> inputType, Orchestrator<I, O> orchestrator) {
+    public OrchestratorInvoker(Class<I> inputType, BaseOrchestrator<I, O> orchestrator) {
         this.inputType = inputType;
         this.orchestrator = orchestrator;
         this.stepMap = new SagaStepMap();
@@ -46,5 +47,9 @@ public class OrchestratorInvoker<I extends ExternalRequestBody, O extends Extern
 
     public ExternalReply<O> prepareExternalReply(SagaStepHistory sagaStepHistory) {
         return orchestrator.prepareExternalReply(sagaStepHistory);
+    }
+
+    public ExternalReply<? extends ExternalReplyBody> prepareTimeoutReply(ExternalRequest<I> request, String sagaId) {
+        return orchestrator.prepareTimeoutReply(request, sagaId);
     }
 }

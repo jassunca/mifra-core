@@ -3,6 +3,7 @@ package org.mifra.testresources.orchestrators;
 import org.mifra.core.api.models.domain.SagaStepMessage;
 import org.mifra.core.api.models.external.ExternalReply;
 import org.mifra.core.api.models.external.ExternalRequest;
+import org.mifra.core.api.orchestrator.BaseOrchestrator;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.api.models.domain.SagaStepHistory;
 import org.mifra.core.components.stepmaps.SagaStepMap;
@@ -11,7 +12,7 @@ import org.mifra.testresources.messages.SampleExternalRequestBody;
 import org.mifra.testresources.messages.SampleParticipantBPayload;
 import org.mifra.testresources.messages.SampleStartingPayload;
 
-public class SampleOrchestrator implements Orchestrator<SampleExternalRequestBody, SampleExternalReplyBody> {
+public class SampleOrchestrator extends BaseOrchestrator<SampleExternalRequestBody, SampleExternalReplyBody> {
     @Override
     public SagaStepMessage<?> handleOncomingRequest(ExternalRequest<SampleExternalRequestBody> request) {
 

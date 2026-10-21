@@ -4,17 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mifra.core.api.models.domain.payloads.SagaStepPayload;
 import org.mifra.core.api.models.external.payloads.ExternalReplyBody;
 import org.mifra.core.api.models.external.payloads.ExternalRequestBody;
+import org.mifra.core.api.orchestrator.BaseOrchestrator;
 import org.mifra.core.api.orchestrator.Orchestrator;
 import org.mifra.core.components.coordinators.MifraCoordinator;
 import org.mifra.core.components.dispatchers.InProcessSagaDispatcher;
+import org.mifra.core.components.executors.MifraExecutorManager;
 import org.mifra.core.components.external.assemblers.HttpMessageAssembler;
 import org.mifra.core.components.external.assemblers.MifraExternalMessageAssembler;
 import org.mifra.core.components.handlers.ParticipantStepHandler;
 import org.mifra.core.components.registries.OrchestratorRegistry;
 import org.mifra.core.components.registries.ParticipantRegistry;
 import org.mifra.core.components.serializers.HttpEndpointRequestDeserializer;
+import org.mifra.core.config.ConfigBuilder;
+import org.mifra.core.config.MifraConfig;
 import org.mifra.core.network.MifraBaseServer;
 import org.mifra.core.network.http.MifraHttpServer;
+
+import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Core framework engine that controls application execution. It handles both the pre-bootstrap orchestrator and
@@ -22,14 +31,18 @@ import org.mifra.core.network.http.MifraHttpServer;
  */
 public class MifraEngine {
 
+    private final MifraConfig config;
+
     private MifraBaseServer server;
 
-    private final OrchestratorRegistry orchestratorRegistry;
-    private final ParticipantRegistry participantRegistry;
+    private OrchestratorRegistry orchestratorRegistry;
+    private ParticipantRegistry participantRegistry;
 
-    private final InProcessSagaDispatcher dispatcher;
+    private InProcessSagaDispatcher dispatcher;
 
     private MifraCoordinator coordinator;
+
+    private MifraExecutorManager executorManager;
 
     private HttpEndpointRequestDeserializer deserializer = new HttpEndpointRequestDeserializer();
 
@@ -37,17 +50,35 @@ public class MifraEngine {
 
     private static final System.Logger logger = System.getLogger(OrchestratorRegistry.class.getName());
 
-    public MifraEngine() {
+    public MifraEngine(String path) throws IOException {
 
-        //TODO a proper bootstrapper with polymorphic server support after checked everything working
+        config = new ConfigBuilder()
+                .setConfigFilePath(path)
+                .build();
+
+        bootStrap(config);
+    }
+
+    public MifraEngine() throws IOException {
+
+        config = new ConfigBuilder()
+                .build();
+
+        bootStrap(config);
+    }
+
+    private void bootStrap(MifraConfig config) {
+
         orchestratorRegistry = new OrchestratorRegistry();
         participantRegistry = new ParticipantRegistry();
         dispatcher = new InProcessSagaDispatcher(participantRegistry);
         coordinator = new MifraCoordinator(dispatcher);
 
+        executorManager = new MifraExecutorManager(coordinator, config.getCore());
+
         deserializer = new HttpEndpointRequestDeserializer();
 
-        assembler = new HttpMessageAssembler(coordinator, orchestratorRegistry, deserializer);
+        assembler = new HttpMessageAssembler(executorManager, orchestratorRegistry, deserializer);
     }
 
     /**
@@ -55,12 +86,10 @@ public class MifraEngine {
      */
     public void startAndJoin() throws Exception {
 
-        int port = 8080;
-
         //TODO polymorphic server interface
-        server = new MifraHttpServer(port, assembler);
+        server = new MifraHttpServer(config.getServer().getHttp(), assembler);
 
-        logger.log(System.Logger.Level.INFO,String.format("Starting Mifra server endpoint on port %d.", port));
+        logger.log(System.Logger.Level.INFO,String.format("Starting Mifra server endpoint on port %d.", config.getServer().getHttp().getEndpointPort()));
         server.start();
         
     }
@@ -71,7 +100,9 @@ public class MifraEngine {
     //TODO implement the stopping service
     public void stop() throws Exception {
         logger.log(System.Logger.Level.INFO,"Stopping Mifra server.");
-        this.server.stop();
+        if (this.server != null) {
+            this.server.stop();
+        }
     }
 
     /**
@@ -87,7 +118,7 @@ public class MifraEngine {
             String path,
             Class<I> inputType,
             Class<O> outputType,
-            Orchestrator<I, O> orchestrator) {
+            BaseOrchestrator<I, O> orchestrator) {
         logger.log(System.Logger.Level.INFO,String.format("Registering orchestrator: %s",orchestrator.getClass().getName()));
         orchestratorRegistry.register(path, inputType, outputType, orchestrator);
     }
