@@ -19,11 +19,17 @@ Mifra was built from the ground up to provide the robust architectural foundatio
 
 ## Architecture
 
-In its current 0.1.0 iteration, Mifra's internal architecture is structured according to this diagram. For previous versions of Mifra, they are available at the ReadMe resources of each respective iteration branch.
+In its current 0.2.0 iteration, Mifra's internal architecture is structured according to this diagram. For previous versions of Mifra, they are available at the ReadMe resources of each respective iteration branch.
 
-### Mifra-Core 0.1.0 Class Structure
+### Mifra-Core 0.2.0 Class Structure
 
-![Alt text](readmeResources/ClassDiagram_0.1.0.svg)
+#### Saga Execution Class Structure
+
+![Alt text](readmeResources/SagaClassDiagram_0.2.0.svg)
+
+#### Bootstrap Class Structure
+
+![Alt text](readmeResources/BootstrapClassDiagram_0.2.0.svg)
 
 ## Hot To Use
 
@@ -41,7 +47,7 @@ Currently, Mifra is distributed as a Maven package via Jitpack. To include it as
 <dependency>
     <groupId>com.github.jassunca</groupId>
     <artifactId>mifra-core</artifactId>
-    <version>v0.1.0</version>
+    <version>v0.2.0</version>
 </dependency>
 ```
 
@@ -49,9 +55,9 @@ Currently, Mifra is distributed as a Maven package via Jitpack. To include it as
 
 The development of Mifra is structured in several distinct iterations, with the current development roadmap structured as follows:
 
-* **[0.1.0 (Current)](https://github.com/jassunca/mifra-core/tree/0.1.0):** MVP featuring a functional Saga-pattern coordinator managing local orchestrators and participants. Successfully executes a valid, end-to-end saga flow from client request to final reply.
-* **0.2.0:** Introduction of the asynchronous engine for parallel execution of independent saga steps.
-* **0.3.0:** Refactoring and splitting `mifra-core` into distinct "core" and "api" libraries to support a clean modular system for future plug-ins, along with adding support for provision of configuration files.
+* **[0.1.0](https://github.com/jassunca/mifra-core/tree/0.1.0):** MVP featuring a functional Saga-pattern coordinator managing local orchestrators and participants. Successfully executes a valid, end-to-end saga flow from client request to final reply.
+* **[0.2.0 (Current)](https://github.com/jassunca/mifra-core/tree/0.2.0):** Introduction of the asynchronous engine for parallel execution of independent saga steps, along with adding support for provision of configuration files.
+* **0.3.0:** Refactoring and splitting `mifra-core` into distinct "core" and "api" libraries to support a clean modular system for future plug-ins.
 * **0.4.0:** Introduction of network library modules to deploy and coordinate remote participants across network boundaries.
 * **0.5.0:** Introduction of the repository library to manage data persistence and state tracking.
 * **0.6.0:** Implementation of saga rollback and failure handling mechanisms *(intentionally scheduled here to build directly upon the 0.5.0 persistence layer for reliable state restoration)*.
