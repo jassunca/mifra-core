@@ -14,7 +14,8 @@ import java.util.Map;
  *           ExternalReplyBody.
  */
 public class ExternalReply <T extends ExternalReplyBody> implements EndpointReply {
-    private String status;
+    private int statusCode;
+    private String statusMessage;
     private final Map<String, List<String>> headers;
     private T payload;
 
@@ -43,11 +44,19 @@ public class ExternalReply <T extends ExternalReplyBody> implements EndpointRepl
         this.payload = payload;
     }
 
-    public String getStatus() {
-        return status;
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 }
