@@ -47,7 +47,7 @@ Currently, Mifra is distributed as a Maven package via Jitpack. To include it as
 <dependency>
     <groupId>com.github.jassunca</groupId>
     <artifactId>mifra-core</artifactId>
-    <version>v0.2.0</version>
+    <version>v0.2.1</version>
 </dependency>
 ```
 
