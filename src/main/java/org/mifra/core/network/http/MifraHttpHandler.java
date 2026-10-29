@@ -57,7 +57,7 @@ public class MifraHttpHandler extends Handler.Abstract{
                 return false;
             }
 
-            response.setStatus(200);
+            response.setStatus(replyEnvelope.getStatusCode());
 
             replyEnvelope.getHeaders().forEach((key, values) -> {
                 for (String val : values) {
@@ -73,7 +73,7 @@ public class MifraHttpHandler extends Handler.Abstract{
         } catch (JsonProcessingException | IllegalArgumentException e) {
             ExternalErrorReplyBody error = new ExternalErrorReplyBody("BAD_REQUEST_FORMAT", e.getMessage(), List.of());
             ExternalReply<ExternalReplyBody> errorEnvelope = new ExternalReply<>(error);
-            errorEnvelope.setStatus("BAD_REQUEST");
+            errorEnvelope.setStatusMessage("BAD_REQUEST");
 
             response.setStatus(400);
             response.write(true, ByteBuffer.wrap(mapper.writeValueAsBytes(errorEnvelope)), callback);
@@ -83,7 +83,7 @@ public class MifraHttpHandler extends Handler.Abstract{
             // General protection against unhandled execution faults
             ExternalErrorReplyBody error = new ExternalErrorReplyBody("INTERNAL_SERVER_ERROR", "An unexpected error occurred.", List.of());
             ExternalReply<ExternalReplyBody> errorEnvelope = new ExternalReply<>(error);
-            errorEnvelope.setStatus("SERVER_FAULT");
+            errorEnvelope.setStatusMessage("SERVER_FAULT");
 
             response.setStatus(500);
             response.write(true, ByteBuffer.wrap(mapper.writeValueAsBytes(errorEnvelope)), callback);

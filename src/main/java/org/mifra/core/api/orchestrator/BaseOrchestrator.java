@@ -12,7 +12,8 @@ public abstract class BaseOrchestrator<I extends ExternalRequestBody, O extends 
 
         ExternalTimeoutReplyBody payload = new ExternalTimeoutReplyBody("The operation timed out waiting for a response.");
         ExternalReply<ExternalTimeoutReplyBody> reply = new ExternalReply<>();
-        reply.setStatus("500");
+        reply.setStatusCode(500);
+        reply.setStatusMessage("TIMEOUT");
         reply.setPayload(payload);
 
         return reply;
